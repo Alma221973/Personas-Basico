@@ -24,6 +24,8 @@ export class PersonaComponent {
   nombre = '';
   fechaNacimiento = '';
 
+  indiceEditar = -1;
+
   constructor(private router: Router) {
     if (localStorage.getItem('sesionBasica') !== 'si') {
       this.router.navigate(['/login']);
@@ -42,13 +44,15 @@ export class PersonaComponent {
     this.router.navigate(['/login']);
   }
 
-  guardar() {
-    if (this.dni.trim() === '' || this.nombre.trim() === '' ||
-        this.fechaNacimiento === '') {
-      alert('Complete los tres campos');
-      return;
-    }
+  
+guardar() {
+  if (this.dni.trim() === '' || this.nombre.trim() === '' ||
+      this.fechaNacimiento === '') {
+    alert('Complete los tres campos');
+    return;
+  }
 
+  if (this.indiceEditar === -1) {
     let nuevoId = 1;
 
     for (const persona of this.personas) {
@@ -65,19 +69,37 @@ export class PersonaComponent {
     };
 
     this.personas.push(nuevaPersona);
-    this.guardarEnLocalStorage();
-    this.limpiar();
+  } else {
+    this.personas[this.indiceEditar].dni = this.dni.trim();
+    this.personas[this.indiceEditar].nombre = this.nombre.trim();
+    this.personas[this.indiceEditar].fechaNacimiento =
+      this.fechaNacimiento;
   }
+
+  this.guardarEnLocalStorage();
+  this.limpiar();
+}
+
 
   limpiar() {
     this.dni = '';
     this.nombre = '';
     this.fechaNacimiento = '';
+    this.indiceEditar = -1;
   }
 
   guardarEnLocalStorage() {
     localStorage.setItem('personasBasico',
       JSON.stringify(this.personas));
   }
+
+  
+editar(indice: number) {
+  this.indiceEditar = indice;
+  this.dni = this.personas[indice].dni;
+  this.nombre = this.personas[indice].nombre;
+  this.fechaNacimiento = this.personas[indice].fechaNacimiento;
+}
+
 
 }
