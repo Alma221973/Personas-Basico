@@ -102,4 +102,13 @@ editar(indice: number) {
 }
 
 
+eliminar(indice: number) {
+  if (confirm('¿Eliminar esta persona?')) {
+    this.personas.splice(indice, 1);
+    this.guardarEnLocalStorage();
+    this.limpiar();
+  }
+}
+
+
 }
